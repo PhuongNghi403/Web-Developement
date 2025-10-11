@@ -1,0 +1,281 @@
+<html>
+<head>
+    <title>Product Order Results - Ex 53 - HNPN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        
+        .results-section {
+            margin-bottom: 30px;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 15px;
+            border-left: 4px solid #007bff;
+            padding-left: 10px;
+        }
+        
+        .product-item {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .product-header {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .product-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .detail-value {
+            color: #333;
+        }
+        
+        .total-section {
+            background-color: #e8f4fd;
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .total-amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .back-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        
+        .back-button:hover {
+            background-color: #5a6268;
+        }
+        
+        .no-data {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .summary-table th,
+        .summary-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .summary-table th {
+            background-color: #007bff;
+            color: white;
+        }
+        
+        .summary-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product Order Summary</h1>
+        
+        <div class="results-section">
+            <div class="section-title">Order Details</div>
+            <div id="orderDetails"></div>
+        </div>
+        
+        <div class="total-section">
+            <div>Total Amount: <span class="total-amount" id="totalAmount">$0.00</span></div>
+        </div>
+        
+        <div class="results-section">
+            <div class="section-title">Complete Order Summary</div>
+            <table class="summary-table" id="summaryTable">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Part Number</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Item Details</th>
+                    </tr>
+                </thead>
+                <tbody id="summaryTableBody">
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center;">
+            <button class="back-button" onclick="goBack()">← Back to Product List</button>
+        </div>
+    </div>
+
+    <script>
+        // Product information
+        const products = {
+            'c112': { name: 'Mouse', price: 19.95 },
+            'b124': { name: 'Keyboard US', price: 29.95 },
+            'u125': { name: 'USB KingMax', price: 39.95 }
+        };
+
+        function getURLParameters() {
+            const params = new URLSearchParams(window.location.search);
+            const data = {};
+            
+            for (let [key, value] of params) {
+                data[key] = value;
+            }
+            
+            return data;
+        }
+
+        function displayOrderDetails() {
+            const params = getURLParameters();
+            const orderDetailsDiv = document.getElementById('orderDetails');
+            const summaryTableBody = document.getElementById('summaryTableBody');
+            const totalAmountSpan = document.getElementById('totalAmount');
+            
+            let hasOrders = false;
+            let grandTotal = 0;
+            
+            // Clear existing content
+            orderDetailsDiv.innerHTML = '';
+            summaryTableBody.innerHTML = '';
+            
+            // Process each product
+            for (let productCode in products) {
+                const qtyKey = `qty_${productCode}`;
+                const itemKey = `item_${productCode}`;
+                
+                const quantity = parseInt(params[qtyKey]) || 0;
+                const itemDetails = params[itemKey] || '';
+                
+                if (quantity > 0 || itemDetails.trim() !== '') {
+                    hasOrders = true;
+                    
+                    const product = products[productCode];
+                    const subtotal = quantity * product.price;
+                    grandTotal += subtotal;
+                    
+                    // Create product item display
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'product-item';
+                    productDiv.innerHTML = `
+                        <div class="product-header">${productCode.toUpperCase()} - ${product.name}</div>
+                        <div class="product-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Price:</span>
+                                <span class="detail-value">$${product.price.toFixed(2)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Quantity:</span>
+                                <span class="detail-value">${quantity}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Subtotal:</span>
+                                <span class="detail-value">$${subtotal.toFixed(2)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Item Details:</span>
+                                <span class="detail-value">${itemDetails || 'No details provided'}</span>
+                            </div>
+                        </div>
+                    `;
+                    orderDetailsDiv.appendChild(productDiv);
+                    
+                    // Add to summary table
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>${productCode.toUpperCase()}</td>
+                        <td>$${product.price.toFixed(2)}</td>
+                        <td>${quantity}</td>
+                        <td>$${subtotal.toFixed(2)}</td>
+                        <td>${itemDetails || 'N/A'}</td>
+                    `;
+                    summaryTableBody.appendChild(row);
+                }
+            }
+            
+            // Display total from form or calculated total
+            const formTotal = params.total || `$${grandTotal.toFixed(2)}`;
+            totalAmountSpan.textContent = formTotal;
+            
+            if (!hasOrders) {
+                orderDetailsDiv.innerHTML = '<div class="no-data">No products were ordered.</div>';
+                summaryTableBody.innerHTML = '<tr><td colspan="6" class="no-data">No order data to display</td></tr>';
+            }
+        }
+
+        function goBack() {
+            window.location.href = 'Product.html';
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayOrderDetails();
+        });
+    </script>
+</body>
+</html>

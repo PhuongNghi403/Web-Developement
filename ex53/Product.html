@@ -1,0 +1,207 @@
+<html>
+<head>
+    <title>Ex 53 - HNPN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 5px rgba(0,123,255,0.3);
+        }
+        
+        .total-section {
+            text-align: right;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .total-input {
+            width: 150px;
+            padding: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: right;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .sum-button {
+            background-color: #ff8c00;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .sum-button:hover {
+            background-color: #e67e00;
+        }
+        
+        .sum-button:active {
+            background-color: #cc7000;
+        }
+        
+        .price-cell {
+            text-align: right;
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Product List - GET Method</h1>
+        
+        <form method="GET" action="result.html">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Part Number</th>
+                        <th>Description</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Item table</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>C112</td>
+                        <td>Mouse</td>
+                        <td class="price-cell">19.95$</td>
+                        <td>
+                            <input type="number" name="qty_c112" min="0" step="1" placeholder="0">
+                        </td>
+                        <td>
+                            <input type="text" name="item_c112" placeholder="Enter item details">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>B124</td>
+                        <td>Keyboard US</td>
+                        <td class="price-cell">29.95$</td>
+                        <td>
+                            <input type="number" name="qty_b124" min="0" step="1" placeholder="0">
+                        </td>
+                        <td>
+                            <input type="text" name="item_b124" placeholder="Enter item details">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>U125</td>
+                        <td>USB KingMax</td>
+                        <td class="price-cell">39.95$</td>
+                        <td>
+                            <input type="number" name="qty_u125" min="0" step="1" placeholder="0">
+                        </td>
+                        <td>
+                            <input type="text" name="item_u125" placeholder="Enter item details">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="total-section">
+                <span class="total-label">Total:</span>
+                <input type="text" name="total" class="total-input" readonly placeholder="0.00$">
+                <button type="submit" class="sum-button">Sum</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Calculate total when quantities change
+        function calculateTotal() {
+            const prices = {
+                'qty_c112': 19.95,
+                'qty_b124': 29.95,
+                'qty_u125': 39.95
+            };
+            
+            let total = 0;
+            
+            for (let qtyField in prices) {
+                const qty = parseInt(document.querySelector(`input[name="${qtyField}"]`).value) || 0;
+                total += qty * prices[qtyField];
+            }
+            
+            document.querySelector('input[name="total"]').value = total.toFixed(2) + '$';
+        }
+        
+        // Add event listeners to quantity inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const qtyInputs = document.querySelectorAll('input[type="number"]');
+            qtyInputs.forEach(input => {
+                input.addEventListener('input', calculateTotal);
+                input.addEventListener('change', calculateTotal);
+            });
+        });
+    </script>
+</body>
+</html>
