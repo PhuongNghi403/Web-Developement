@@ -1,0 +1,124 @@
+<html>
+<head>
+    <title>Ex 55 - HNPN</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .banner {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 2px solid #666;
+            background: #ddd;
+            font-weight: bold;
+            font-style: italic;
+        }
+        table { border-collapse: collapse; width: 700px; margin: 16px 0; }
+        td { border: 1px solid #999; padding: 10px; }
+        .table-title {
+            text-align: center; font-weight: bold; background: #dff0d8;
+        }
+        .label { width: 120px; }
+        .input-cell input { width: 100%; box-sizing: border-box; padding: 8px; }
+        #result { color: #d82020; font-weight: bold; }
+        .actions { text-align: center; }
+        .btn {
+            background: #f4a941; border: 1px solid #a9792a;
+            padding: 10px 18px; margin: 4px 10px; font-weight: bold; cursor: pointer;
+        }
+        .btn:hover { background: #e8992f; }
+    </style>
+</head>
+<body>
+    <div class="banner">Exercise 55: The quadratic equation</div>
+
+    <h3>Requirement:</h3>
+    <p>Write a WebSite to solve quadratic equations as described below:</p>
+
+    <table>
+        <tr>
+            <td class="table-title" colspan="2">The quadratic equation</td>
+        </tr>
+        <tr>
+            <td class="label">a:</td>
+            <td class="input-cell"><input type="text" id="a" value="1"></td>
+        </tr>
+        <tr>
+            <td class="label">b:</td>
+            <td class="input-cell"><input type="text" id="b" value="3"></td>
+        </tr>
+        <tr>
+            <td class="label">c:</td>
+            <td class="input-cell"><input type="text" id="c" value="-4"></td>
+        </tr>
+        <tr>
+            <td class="label">Result:</td>
+            <td class="input-cell"><input type="text" id="result" readonly></td>
+        </tr>
+        <tr>
+            <td colspan="2" class="actions">
+                <button type="button" class="btn" onclick="findSolution()">Find solution</button>
+                <button type="button" class="btn" onclick="clearForm()">Clear</button>
+            </td>
+        </tr>
+    </table>
+
+    <h3>Instructions:</h3>
+    <p>Using Javascript to handle buttons in Web pages, each function writes its own function to handle.</p>
+
+    <script>
+        function getNum(id) {
+            const v = document.getElementById(id).value.trim();
+            const n = parseFloat(v);
+            return { valid: v !== "" && !isNaN(n), num: n };
+        }
+        function setResult(text) {
+            document.getElementById('result').value = text;
+        }
+        function format(n) {
+            return Math.abs(n - Math.round(n)) < 1e-12
+                ? String(Math.round(n))
+                : n.toFixed(6).replace(/\.?0+$/, '');
+        }
+        function findSolution() {
+            const a = getNum('a'), b = getNum('b'), c = getNum('c');
+            if (!a.valid || !b.valid || !c.valid) {
+                setResult('Please enter valid numbers for a, b, c');
+                return;
+            }
+
+            if (a.num === 0) {
+                // Phương trình tuyến tính: b*x + c = 0
+                if (b.num === 0) {
+                    setResult(c.num === 0 ? 'Infinite solutions' : 'No solution');
+                } else {
+                    const x = -c.num / b.num;
+                    setResult('x=' + format(x));
+                }
+                return;
+            }
+
+            const delta = b.num * b.num - 4 * a.num * c.num;
+            if (delta < 0) {
+                setResult('No real roots');
+            } else if (delta === 0) {
+                const x = -b.num / (2 * a.num);
+                setResult('x1=x2=' + format(x));
+            } else {
+                const sqrtD = Math.sqrt(delta);
+                const x1 = (-b.num - sqrtD) / (2 * a.num);
+                const x2 = (-b.num + sqrtD) / (2 * a.num);
+                // Hiển thị theo thứ tự như hình: x1=-4 ; x2=1
+                setResult('x1=' + format(x1) + ' ; x2=' + format(x2));
+            }
+        }
+        function clearForm() {
+            document.getElementById('a').value = '';
+            document.getElementById('b').value = '';
+            document.getElementById('c').value = '';
+            setResult('');
+            document.getElementById('a').focus();
+        }
+        // Khởi tạo kết quả theo ví dụ trong hình (a=1, b=3, c=-4)
+        document.addEventListener('DOMContentLoaded', findSolution);
+    </script>
+</body>
+</html>

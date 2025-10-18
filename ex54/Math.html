@@ -1,0 +1,110 @@
+<html>
+<head>
+    <title>Ex 54 - HNPN</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .banner {
+            display: inline-block;
+            padding: 8px 12px;
+            border: 2px solid #666;
+            background: #ddd;
+            font-weight: bold;
+            font-style: italic;
+        }
+        h3 { margin-top: 16px; }
+        table { border-collapse: collapse; width: 600px; margin-top: 10px; }
+        td { border: 1px solid #999; padding: 10px; }
+        .label { width: 160px; }
+        .input-cell input { width: 100%; box-sizing: border-box; padding: 6px; }
+        .buttons { margin-top: 10px; }
+        .btn {
+            background: #e6e6e6;
+            border: 1px solid #999;
+            padding: 8px 16px;
+            margin-right: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn:hover { background: #dcdcdc; }
+        #result { background: #f5f5f5; }
+    </style>
+</head>
+<body>
+    <div class="banner">Exercise 54: Math function</div>
+
+    <h3>Requirement:</h3>
+    <p>Create a website with Table and Textbox, Button to calculate MAX, MIN, sin, cos… As described below:</p>
+
+    <table>
+        <tr>
+            <td class="label">a:</td>
+            <td class="input-cell"><input type="text" id="a" value="30"></td>
+        </tr>
+        <tr>
+            <td class="label">b:</td>
+            <td class="input-cell"><input type="text" id="b" value="45"></td>
+        </tr>
+        <tr>
+            <td class="label">c:</td>
+            <td class="input-cell"><input type="text" id="c" value="90"></td>
+        </tr>
+        <tr>
+            <td class="label">Result:</td>
+            <td class="input-cell"><input type="text" id="result" readonly></td>
+        </tr>
+    </table>
+
+    <div class="buttons">
+        <button type="button" class="btn" onclick="calcMax()">MAX</button>
+        <button type="button" class="btn" onclick="calcMin()">MIN</button>
+        <button type="button" class="btn" onclick="sinA()">sin(a)</button>
+        <button type="button" class="btn" onclick="cosA()">Cos(a)</button>
+        <button type="button" class="btn" onclick="powAB()">a^b</button>
+    </div>
+
+    <h3>Instructions:</h3>
+    <p>Using Javascript to handle buttons in Web pages, each function writes its own function to handle.</p>
+
+    <script>
+        function getNumber(id) {
+            const v = document.getElementById(id).value.trim();
+            const n = parseFloat(v);
+            return { valid: v !== "" && !isNaN(n), num: n };
+        }
+        function setResult(value) {
+            document.getElementById('result').value = String(value);
+        }
+        function calcMax() {
+            const a = getNumber('a'), b = getNumber('b'), c = getNumber('c');
+            if (!a.valid || !b.valid || !c.valid) return setResult('Please enter numbers for a, b, c');
+            setResult(Math.max(a.num, b.num, c.num));
+        }
+        function calcMin() {
+            const a = getNumber('a'), b = getNumber('b'), c = getNumber('c');
+            if (!a.valid || !b.valid || !c.valid) return setResult('Please enter numbers for a, b, c');
+            setResult(Math.min(a.num, b.num, c.num));
+        }
+        function sinA() {
+            const a = getNumber('a');
+            if (!a.valid) return setResult('Please enter a number for a');
+            // Using radians (Math.sin expects radians) — giống kết quả minh họa trong hình
+            setResult(Math.sin(a.num));
+        }
+        function cosA() {
+            const a = getNumber('a');
+            if (!a.valid) return setResult('Please enter a number for a');
+            setResult(Math.cos(a.num));
+        }
+        function powAB() {
+            const a = getNumber('a'), b = getNumber('b');
+            if (!a.valid || !b.valid) return setResult('Please enter numbers for a and b');
+            setResult(Math.pow(a.num, b.num));
+        }
+        // Khởi tạo kết quả ví dụ: sin(30) (radian) như hình minh họa
+        document.addEventListener('DOMContentLoaded', function () {
+            const a = getNumber('a');
+            if (a.valid) setResult(Math.sin(a.num));
+        });
+    </script>
+</body>
+</html>
