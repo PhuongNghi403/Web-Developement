@@ -1,0 +1,126 @@
+<html>
+<head>
+    <title>Ex 66 - HNPN</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .banner {
+            display: inline-block; padding: 8px 12px; border: 2px solid #666;
+            background: #ddd; font-weight: bold; font-style: italic;
+        }
+        h3 { margin-top: 16px; }
+        .xml-code {
+            background: #f5f5f5; border: 1px solid #ccc; padding: 15px;
+            font-family: monospace; margin: 10px 0; white-space: pre-line;
+        }
+        .xml-tag { color: #d73a49; }
+        .xml-content { color: #032f62; }
+        table { border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #999; padding: 12px; text-align: left; }
+        th { background: #dff0d8; font-weight: bold; text-align: center; }
+        .label-col { background: #f8f9fa; font-weight: bold; width: 150px; }
+        .data-row { transition: all 0.3s ease; }
+        .data-row:hover { background: #007bff !important; color: white !important; }
+        .data-row td:hover { background: #007bff !important; color: white !important; }
+    </style>
+</head>
+<body>
+
+    <div class="banner">Exercise 66: XML-Dom Parser</div>
+
+    <h3>Requirement:</h3>
+    <p>In the HTML file there is an XML string with the following content:</p>
+
+    <div class="xml-code">
+<span class="xml-tag">&lt;student&gt;</span>
+    <span class="xml-tag">&lt;id&gt;</span><span class="xml-content">987456</span><span class="xml-tag">&lt;/id&gt;</span>
+    <span class="xml-tag">&lt;name&gt;</span><span class="xml-content">Marie Curie</span><span class="xml-tag">&lt;/name&gt;</span>
+    <span class="xml-tag">&lt;birthday&gt;</span><span class="xml-content">7/11/1867</span><span class="xml-tag">&lt;/birthday&gt;</span>
+    <span class="xml-tag">&lt;gender&gt;</span><span class="xml-content">Woman</span><span class="xml-tag">&lt;/gender&gt;</span>
+<span class="xml-tag">&lt;/student&gt;</span>
+    </div>
+
+    <p>Use DOMParser to read Student ID, Full Name, Date of Birth, Gender and display it on Table:</p>
+
+    <table id="studentTable">
+        <tr>
+            <th colspan="2">Student Information</th>
+        </tr>
+        <tr class="data-row">
+            <td class="label-col">Student ID:</td>
+            <td id="studentId">Loading...</td>
+        </tr>
+        <tr class="data-row">
+            <td class="label-col">Student Name:</td>
+            <td id="studentName">Loading...</td>
+        </tr>
+        <tr class="data-row">
+            <td class="label-col">Birthday:</td>
+            <td id="birthday">Loading...</td>
+        </tr>
+        <tr class="data-row">
+            <td class="label-col">Gender:</td>
+            <td id="gender">Loading...</td>
+        </tr>
+    </table>
+
+    <ul>
+        <li>Add mouse movement event to the row: Blue background, white text</li>
+        <li>Add event to move mouse out of row: white background, black text</li>
+    </ul>
+
+    <h3>Instructions:</h3>
+    <p>Read the DOMParser lecture in slides</p>
+
+    <script>
+        // XML string data
+        const xmlString = `
+        <student>
+            <id>987456</id>
+            <name>Marie Curie</name>
+            <birthday>7/11/1867</birthday>
+            <gender>Woman</gender>
+        </student>`;
+
+        function parseXMLData() {
+            try {
+                // Create DOMParser instance
+                const parser = new DOMParser();
+                
+                // Parse XML string
+                const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+                
+                // Check for parsing errors
+                const parserError = xmlDoc.getElementsByTagName("parsererror");
+                if (parserError.length > 0) {
+                    throw new Error("XML parsing error");
+                }
+                
+                // Extract data using DOM methods
+                const student = xmlDoc.getElementsByTagName("student")[0];
+                const id = student.getElementsByTagName("id")[0].textContent;
+                const name = student.getElementsByTagName("name")[0].textContent;
+                const birthday = student.getElementsByTagName("birthday")[0].textContent;
+                const gender = student.getElementsByTagName("gender")[0].textContent;
+                
+                // Display data in table
+                document.getElementById("studentId").textContent = id;
+                document.getElementById("studentName").textContent = name;
+                document.getElementById("birthday").textContent = birthday;
+                document.getElementById("gender").textContent = gender;
+                
+            } catch (error) {
+                console.error("Error parsing XML:", error);
+                document.getElementById("studentId").textContent = "Error loading data";
+                document.getElementById("studentName").textContent = "Error loading data";
+                document.getElementById("birthday").textContent = "Error loading data";
+                document.getElementById("gender").textContent = "Error loading data";
+            }
+        }
+
+        // Parse XML data when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            parseXMLData();
+        });
+    </script>
+</body>
+</html>
