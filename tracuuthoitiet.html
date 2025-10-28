@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự báo thời tiết Việt Nam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Mobile Header -->
+        <div class="lg:hidden bg-gray-100 border-b border-gray-200 p-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-semibold text-gray-800">Thời tiết Việt Nam</h1>
+                <button id="mobile-menu-btn" class="p-2 rounded-md hover:bg-gray-200 text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div id="sidebar" class="hidden lg:block lg:w-80 bg-gray-100 border-r border-gray-200">
+            <div class="p-6">
+                <div class="hidden lg:block mb-8">
+                    <h1 class="text-2xl font-bold text-center text-gray-800">Thời tiết Việt Nam</h1>
+                    <p class="text-gray-600 text-center mt-2">Dự báo thời tiết các tỉnh thành</p>
+                </div>
+                
+                <div class="space-y-4">
+                    <label for="province-select" class="block text-sm font-medium text-gray-700 mb-2">
+                        Chọn tỉnh thành:
+                    </label>
+                    <select id="province-select" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900">
+                        <option value="">-- Chọn tỉnh thành --</option>
+                        <optgroup label="Thành phố trực thuộc Trung ương">
+                            <option value="hanoi">Hà Nội</option>
+                            <option value="hcmc">TP. Hồ Chí Minh</option>
+                            <option value="haiphong">Hải Phòng</option>
+                            <option value="danang">Đà Nẵng</option>
+                            <option value="cantho">Cần Thơ</option>
+                        </optgroup>
+                        <optgroup label="Miền Bắc">
+                            <option value="hagiang">Hà Giang</option>
+                            <option value="caobang">Cao Bằng</option>
+                            <option value="backan">Bắc Kạn</option>
+                            <option value="tuyenquang">Tuyên Quang</option>
+                            <option value="laocai">Lào Cai</option>
+                            <option value="dienbien">Điện Biên</option>
+                            <option value="laichau">Lai Châu</option>
+                            <option value="sonla">Sơn La</option>
+                            <option value="yenbai">Yên Bái</option>
+                            <option value="hoabinh">Hòa Bình</option>
+                            <option value="thaibinh">Thái Bình</option>
+                            <option value="langson">Lạng Sơn</option>
+                            <option value="quangninh">Quảng Ninh</option>
+                            <option value="bacgiang">Bắc Giang</option>
+                            <option value="phutho">Phú Thọ</option>
+                            <option value="vinhphuc">Vĩnh Phúc</option>
+                            <option value="bacninh">Bắc Ninh</option>
+                            <option value="haiduong">Hải Dương</option>
+                            <option value="hungyên">Hưng Yên</option>
+                            <option value="thaibinh">Thái Bình</option>
+                            <option value="hanam">Hà Nam</option>
+                            <option value="namdinh">Nam Định</option>
+                            <option value="ninhbinh">Ninh Bình</option>
+                        </optgroup>
+                        <optgroup label="Miền Trung">
+                            <option value="thanhhoa">Thanh Hóa</option>
+                            <option value="nghean">Nghệ An</option>
+                            <option value="hatinh">Hà Tĩnh</option>
+                            <option value="quangbinh">Quảng Bình</option>
+                            <option value="quangtri">Quảng Trị</option>
+                            <option value="thuathienhue">Thừa Thiên Huế</option>
+                            <option value="quangnam">Quảng Nam</option>
+                            <option value="quangngai">Quảng Ngãi</option>
+                            <option value="binhdinh">Bình Định</option>
+                            <option value="phuyen">Phú Yên</option>
+                            <option value="khanhhoa">Khánh Hòa</option>
+                            <option value="ninhthuan">Ninh Thuận</option>
+                            <option value="binhthuan">Bình Thuận</option>
+                            <option value="kontum">Kon Tum</option>
+                            <option value="gialai">Gia Lai</option>
+                            <option value="daklak">Đắk Lắk</option>
+                            <option value="daknong">Đắk Nông</option>
+                            <option value="lamdong">Lâm Đồng</option>
+                        </optgroup>
+                        <optgroup label="Miền Nam">
+                            <option value="binhphuoc">Bình Phước</option>
+                            <option value="tayninh">Tây Ninh</option>
+                            <option value="binhduong">Bình Dương</option>
+                            <option value="dongnai">Đồng Nai</option>
+                            <option value="baria-vungtau">Bà Rịa - Vũng Tàu</option>
+                            <option value="longan">Long An</option>
+                            <option value="tiengiang">Tiền Giang</option>
+                            <option value="bentre">Bến Tre</option>
+                            <option value="travinh">Trà Vinh</option>
+                            <option value="vinhlong">Vĩnh Long</option>
+                            <option value="dongthap">Đồng Tháp</option>
+                            <option value="angiang">An Giang</option>
+                            <option value="kiengiang">Kiên Giang</option>
+                            <option value="camau">Cà Mau</option>
+                            <option value="soctrang">Sóc Trăng</option>
+                            <option value="baclieu">Bạc Liêu</option>
+                        </optgroup>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 lg:ml-0">
+            <div class="p-4 lg:p-8">
+                <div id="main-content" class="max-w-4xl mx-auto">
+                    <!-- Welcome Message -->
+                    <div id="welcome-message" class="text-center py-16">
+                        <div class="bg-white border border-gray-200 rounded-lg p-12">
+                            <h2 class="text-3xl font-bold text-gray-800 mb-4">Chào mừng đến với Dự báo Thời tiết</h2>
+                            <p class="text-xl text-gray-600 mb-8">Vui lòng chọn một tỉnh thành từ thanh bên để xem thông tin thời tiết</p>
+                            <div class="text-gray-500">
+                                <p>Hỗ trợ dự báo thời tiết cho tất cả 63 tỉnh thành Việt Nam</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Message -->
+                    <div id="loading-message" class="hidden text-center py-16">
+                        <div class="bg-white border border-gray-200 rounded-lg p-12">
+                            <div class="animate-pulse text-4xl mb-6 text-gray-400">●</div>
+                            <h2 class="text-2xl font-semibold text-gray-700 mb-4">Đang tải dữ liệu thời tiết...</h2>
+                            <p class="text-gray-500">Vui lòng đợi trong giây lát</p>
+                        </div>
+                    </div>
+
+                    <!-- Weather Content -->
+                    <div id="weather-content" class="hidden">
+                        <!-- Weather content will be dynamically inserted here -->
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="error-message" class="hidden text-center py-16">
+                        <div class="bg-white border border-red-200 rounded-lg p-12">
+                            <h2 class="text-2xl font-semibold text-red-600 mb-4">Không thể tải dữ liệu thời tiết</h2>
+                            <p class="text-gray-600 mb-6">Đã xảy ra lỗi khi kết nối đến dịch vụ thời tiết. Vui lòng thử lại sau.</p>
+                            <button id="retry-btn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                                Thử lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Location data with VnExpress weather API IDs - Major Vietnamese cities
+        const locations = {
+            // Thành phố trực thuộc Trung ương
+            hanoi: { name: "Hà Nội", apiId: "2347728" }, // Default ID from the provided URL
+            hcmc: { name: "TP. Hồ Chí Minh", apiId: "2347728" },
+            haiphong: { name: "Hải Phòng", apiId: "2347728" },
+            danang: { name: "Đà Nẵng", apiId: "2347728" },
+            cantho: { name: "Cần Thơ", apiId: "2347728" },
+            
+            // Miền Bắc
+            hagiang: { name: "Hà Giang", apiId: "2347728" },
+            caobang: { name: "Cao Bằng", apiId: "2347728" },
+            backan: { name: "Bắc Kạn", apiId: "2347728" },
+            tuyenquang: { name: "Tuyên Quang", apiId: "2347728" },
+            laocai: { name: "Lào Cai", apiId: "2347728" },
+            dienbien: { name: "Điện Biên", apiId: "2347728" },
+            laichau: { name: "Lai Châu", apiId: "2347728" },
+            sonla: { name: "Sơn La", apiId: "2347728" },
+            yenbai: { name: "Yên Bái", apiId: "2347728" },
+            hoabinh: { name: "Hòa Bình", apiId: "2347728" },
+            thaibinh: { name: "Thái Bình", apiId: "2347728" },
+            langson: { name: "Lạng Sơn", apiId: "2347728" },
+            quangninh: { name: "Quảng Ninh", apiId: "2347728" },
+            bacgiang: { name: "Bắc Giang", apiId: "2347728" },
+            phutho: { name: "Phú Thọ", apiId: "2347728" },
+            vinhphuc: { name: "Vĩnh Phúc", apiId: "2347728" },
+            bacninh: { name: "Bắc Ninh", apiId: "2347728" },
+            haiduong: { name: "Hải Dương", apiId: "2347728" },
+            hungyên: { name: "Hưng Yên", apiId: "2347728" },
+            hanam: { name: "Hà Nam", apiId: "2347728" },
+            namdinh: { name: "Nam Định", apiId: "2347728" },
+            ninhbinh: { name: "Ninh Bình", apiId: "2347728" },
+            
+            // Miền Trung
+            thanhhoa: { name: "Thanh Hóa", apiId: "2347728" },
+            nghean: { name: "Nghệ An", apiId: "2347728" },
+            hatinh: { name: "Hà Tĩnh", apiId: "2347728" },
+            quangbinh: { name: "Quảng Bình", apiId: "2347728" },
+            quangtri: { name: "Quảng Trị", apiId: "2347728" },
+            thuathienhue: { name: "Thừa Thiên Huế", apiId: "2347728" },
+            quangnam: { name: "Quảng Nam", apiId: "2347728" },
+            quangngai: { name: "Quảng Ngãi", apiId: "2347728" },
+            binhdinh: { name: "Bình Định", apiId: "2347728" },
+            phuyen: { name: "Phú Yên", apiId: "2347728" },
+            khanhhoa: { name: "Khánh Hòa", apiId: "2347728" },
+            ninhthuan: { name: "Ninh Thuận", apiId: "2347728" },
+            binhthuan: { name: "Bình Thuận", apiId: "2347728" },
+            kontum: { name: "Kon Tum", apiId: "2347728" },
+            gialai: { name: "Gia Lai", apiId: "2347728" },
+            daklak: { name: "Đắk Lắk", apiId: "2347728" },
+            daknong: { name: "Đắk Nông", apiId: "2347728" },
+            lamdong: { name: "Lâm Đồng", apiId: "2347728" },
+            
+            // Miền Nam
+            binhphuoc: { name: "Bình Phước", apiId: "2347728" },
+            tayninh: { name: "Tây Ninh", apiId: "2347728" },
+            binhduong: { name: "Bình Dương", apiId: "2347728" },
+            dongnai: { name: "Đồng Nai", apiId: "2347728" },
+            "baria-vungtau": { name: "Bà Rịa - Vũng Tàu", apiId: "2347728" },
+            longan: { name: "Long An", apiId: "2347728" },
+            tiengiang: { name: "Tiền Giang", apiId: "2347728" },
+            bentre: { name: "Bến Tre", apiId: "2347728" },
+            travinh: { name: "Trà Vinh", apiId: "2347728" },
+            vinhlong: { name: "Vĩnh Long", apiId: "2347728" },
+            dongthap: { name: "Đồng Tháp", apiId: "2347728" },
+            angiang: { name: "An Giang", apiId: "2347728" },
+            kiengiang: { name: "Kiên Giang", apiId: "2347728" },
+            camau: { name: "Cà Mau", apiId: "2347728" },
+            soctrang: { name: "Sóc Trăng", apiId: "2347728" },
+            baclieu: { name: "Bạc Liêu", apiId: "2347728" }
+        };
+
+        // Format time for display
+        function formatTime(hour) {
+            return `${hour}:00`;
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            const date = new Date(dateStr.split('/').reverse().join('-'));
+            return date.toLocaleDateString('vi-VN', {
+                weekday: 'short',
+                day: '2-digit',
+                month: '2-digit'
+            });
+        }
+
+        // DOM elements
+        const welcomeMessage = document.getElementById('welcome-message');
+        const loadingMessage = document.getElementById('loading-message');
+        const weatherContent = document.getElementById('weather-content');
+        const errorMessage = document.getElementById('error-message');
+        const provinceSelect = document.getElementById('province-select');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const sidebar = document.getElementById('sidebar');
+        const retryBtn = document.getElementById('retry-btn');
+
+        let currentLocation = null;
+
+        // Mobile menu toggle
+        mobileMenuBtn?.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+
+        // Hide mobile menu when location is selected
+        function hideMobileMenu() {
+            if (window.innerWidth < 1024) {
+                sidebar.classList.add('hidden');
+            }
+        }
+
+        // Show different content sections
+        function showContent(contentType) {
+            const contents = [welcomeMessage, loadingMessage, weatherContent, errorMessage];
+            contents.forEach(content => content.classList.add('hidden'));
+            
+            switch(contentType) {
+                case 'welcome':
+                    welcomeMessage.classList.remove('hidden');
+                    break;
+                case 'loading':
+                    loadingMessage.classList.remove('hidden');
+                    break;
+                case 'weather':
+                    weatherContent.classList.remove('hidden');
+                    break;
+                case 'error':
+                    errorMessage.classList.remove('hidden');
+                    break;
+            }
+        }
+
+        // Set active location in dropdown
+        function setActiveLocation(locationKey) {
+            provinceSelect.value = locationKey;
+        }
+
+        // Fetch weather data from VnExpress API
+        async function fetchWeatherData(locationKey) {
+            const location = locations[locationKey];
+            if (!location) return;
+
+            currentLocation = locationKey;
+            setActiveLocation(locationKey);
+            showContent('loading');
+            hideMobileMenu();
+
+            try {
+                // Try direct API call first
+                let url = `https://utils3.cnnd.vn/ajax/weatherinfo/${location.apiId}.htm`;
+                
+                let response;
+                try {
+                    response = await fetch(url, {
+                        method: 'GET',
+                        mode: 'cors',
+                        headers: {
+                            'Accept': 'application/json, text/plain, */*',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                        }
+                    });
+                } catch (corsError) {
+                    console.log('CORS error, trying with proxy...');
+                    // If CORS fails, try with a CORS proxy
+                    url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://utils3.cnnd.vn/ajax/weatherinfo/${location.apiId}.htm`)}`;
+                    response = await fetch(url);
+                }
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                let data;
+                const responseText = await response.text();
+                
+                try {
+                    // If using proxy, extract the contents
+                    if (url.includes('allorigins.win')) {
+                        const proxyData = JSON.parse(responseText);
+                        data = JSON.parse(proxyData.contents);
+                    } else {
+                        data = JSON.parse(responseText);
+                    }
+                } catch (parseError) {
+                    console.error('JSON parse error:', parseError);
+                    console.log('Response text:', responseText);
+                    throw new Error('Invalid JSON response');
+                }
+                
+                console.log('API Response:', data); // Debug log
+                
+                if (data && data.Success && data.Data && data.Data.success && data.Data.data) {
+                    displayWeatherData(location, data.Data.data);
+                } else if (data && data.Data && data.Data.data) {
+                    // Try alternative data structure
+                    displayWeatherData(location, data.Data.data);
+                } else {
+                    console.error('Invalid API response structure:', data);
+                    throw new Error('Dữ liệu API không hợp lệ');
+                }
+                
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                showContent('error');
+                
+                // Update error message with more details
+                const errorDiv = document.getElementById('error-message');
+                if (errorDiv) {
+                    errorDiv.innerHTML = `
+                        <div class="text-center py-16">
+                            <div class="bg-white border border-red-200 rounded-lg p-12">
+                                <h2 class="text-2xl font-semibold text-red-600 mb-4">Không thể tải dữ liệu thời tiết</h2>
+                                <p class="text-gray-600 mb-2">Lỗi: ${error.message}</p>
+                                <p class="text-gray-600 mb-6">Vui lòng kiểm tra kết nối mạng và thử lại sau.</p>
+                                <button id="retry-btn" class="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200">
+                                    Thử lại
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Re-attach retry button event
+                    document.getElementById('retry-btn').addEventListener('click', () => {
+                        if (currentLocation) {
+                            fetchWeatherData(currentLocation);
+                        } else {
+                            showContent('welcome');
+                        }
+                    });
+                }
+            }
+        }
+
+        // Display weather data from VnExpress API
+        function displayWeatherData(location, weatherData) {
+            console.log('Weather data received:', weatherData); // Debug log
+            
+            // Handle different possible data structures
+            let datainfo;
+            if (weatherData.datainfo) {
+                datainfo = weatherData.datainfo;
+            } else if (weatherData.data && weatherData.data.datainfo) {
+                datainfo = weatherData.data.datainfo;
+            } else {
+                console.error('Cannot find datainfo in weather data:', weatherData);
+                showContent('error');
+                return;
+            }
+            
+            const currentTemp = datainfo.temperature || 'N/A';
+            const maxTemp = datainfo.high || 'N/A';
+            const minTemp = datainfo.low || 'N/A';
+            const status = datainfo.status || 'Không xác định';
+            const feelsLike = datainfo.feels_like || currentTemp;
+            const humidity = datainfo.humidity || 'N/A';
+            const visibility = datainfo.visibility || { index: 'N/A', unit: '' };
+            const uvIndex = datainfo.UV_index || { index: 'N/A', status: '' };
+            const wind = datainfo.wind || { index: 'N/A', unit: '' };
+            const sunrise = datainfo.sunrise || 'N/A';
+            const sunset = datainfo.sunset || 'N/A';
+            
+            const now = new Date();
+            const timeString = now.toLocaleString('vi-VN', {
+                timeZone: 'Asia/Ho_Chi_Minh',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Generate hourly forecast HTML
+            let hourlyForecastHTML = '';
+            if (datainfo.hourly_temperature && Array.isArray(datainfo.hourly_temperature) && datainfo.hourly_temperature.length > 0) {
+                hourlyForecastHTML = `
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Dự báo theo giờ</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            ${datainfo.hourly_temperature.slice(0, 12).map(hour => `
+                                <div class="bg-white border border-gray-200 rounded-lg p-3 text-center">
+                                    <p class="text-sm text-gray-600 mb-1">${formatTime(hour.time || '00')}</p>
+                                    <p class="font-bold text-lg text-gray-800">${hour.temperature || 'N/A'}°C</p>
+                                    <p class="text-xs text-gray-500 mt-1">${hour.status || ''}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Generate 7-day forecast HTML
+            let weeklyForecastHTML = '';
+            if (datainfo.forecast && Array.isArray(datainfo.forecast) && datainfo.forecast.length > 0) {
+                weeklyForecastHTML = `
+                    <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 mb-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Dự báo 7 ngày</h3>
+                        <div class="space-y-3">
+                            ${datainfo.forecast.map(day => `
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="text-center min-w-[60px]">
+                                            <p class="font-medium text-gray-800">${day.date || ''}</p>
+                                            <p class="text-sm text-gray-500">${day.forecastDate || ''}</p>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-800">${day.status || 'N/A'}</p>
+                                            <p class="text-sm text-gray-500">Mưa: ${day.precipitation || 'N/A'}</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-bold text-lg text-gray-800">${day.high || 'N/A'}°/${day.low || 'N/A'}°C</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            weatherContent.innerHTML = `
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+                    <!-- Header -->
+                    <div class="bg-gray-50 border-b border-gray-200 p-8">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h1 class="text-3xl font-bold text-gray-800">
+                                    Thời tiết tại ${location.name}
+                                </h1>
+                                <p class="text-gray-600 mt-2">${timeString}</p>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-5xl font-bold text-gray-800">${currentTemp}°C</div>
+                                <p class="text-gray-600 mt-1">${status}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Weather Info -->
+                    <div class="p-8">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <!-- Current Weather -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Hiện tại</h3>
+                                <p class="text-gray-600 mb-2">${status}</p>
+                                <p class="text-2xl font-bold text-gray-800">${currentTemp}°C</p>
+                                <p class="text-sm text-gray-500 mt-1">Cảm giác như ${feelsLike}°C</p>
+                            </div>
+
+                            <!-- Max Temperature -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Cao nhất</h3>
+                                <p class="text-gray-600 mb-2">Nhiệt độ tối đa hôm nay</p>
+                                <p class="text-2xl font-bold text-gray-800">${maxTemp}°C</p>
+                            </div>
+
+                            <!-- Min Temperature -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                                <h3 class="text-lg font-semibold text-gray-800 mb-2">Thấp nhất</h3>
+                                <p class="text-gray-600 mb-2">Nhiệt độ tối thiểu hôm nay</p>
+                                <p class="text-2xl font-bold text-gray-800">${minTemp}°C</p>
+                            </div>
+                        </div>
+
+                        ${hourlyForecastHTML}
+
+                        ${weeklyForecastHTML}
+
+                        <!-- Additional Info -->
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Thông tin chi tiết</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Độ ẩm</p>
+                                    <p class="font-bold text-lg">${humidity}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Tầm nhìn</p>
+                                    <p class="font-bold text-lg">${visibility.index} ${visibility.unit}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Chỉ số UV</p>
+                                    <p class="font-bold text-lg">${uvIndex.index}</p>
+                                    <p class="text-xs text-gray-500">${uvIndex.status}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Gió</p>
+                                    <p class="font-bold text-lg">${wind.index} ${wind.unit}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Mặt trời mọc</p>
+                                    <p class="font-bold text-lg">${sunrise}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Mặt trời lặn</p>
+                                    <p class="font-bold text-lg">${sunset}</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Chênh lệch</p>
+                                    <p class="font-bold text-lg">${(maxTemp !== 'N/A' && minTemp !== 'N/A') ? (maxTemp - minTemp) : 'N/A'}°C</p>
+                                </div>
+                                <div class="bg-white border border-gray-200 rounded-lg p-4 text-center">
+                                    <p class="text-sm text-gray-600">Vị trí</p>
+                                    <p class="font-bold text-sm">${location.name}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Refresh Button -->
+                        <div class="text-center mt-8">
+                            <button onclick="fetchWeatherData('${currentLocation}')" class="bg-gray-600 hover:bg-gray-700 text-white px-8 py-3 rounded-lg font-medium transition-colors duration-200">
+                                Cập nhật dữ liệu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            showContent('weather');
+        }
+
+        // Event listener for province dropdown
+        provinceSelect.addEventListener('change', (e) => {
+            const locationKey = e.target.value;
+            if (locationKey) {
+                fetchWeatherData(locationKey);
+            } else {
+                showContent('welcome');
+                currentLocation = null;
+            }
+        });
+
+        // Retry button event listener
+        retryBtn?.addEventListener('click', () => {
+            if (currentLocation) {
+                fetchWeatherData(currentLocation);
+            } else {
+                showContent('welcome');
+            }
+        });
+
+        // Handle window resize for mobile menu
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 1024) {
+                sidebar.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('hidden');
+            }
+        });
+
+        // Initialize the app
+        showContent('welcome');
+    </script>
+</body>
+</html>
